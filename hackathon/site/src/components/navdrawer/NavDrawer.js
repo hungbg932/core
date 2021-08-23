@@ -14,6 +14,7 @@ import {
 } from "@material-ui/icons";
 import DrawerItem from "./DrawerItem";
 import { useUiStore } from "../../store";
+import { navigate } from "@reach/router";
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -39,6 +40,7 @@ export default function NavDrawer() {
   const [{ selectedLabelId, isNavBarOpen }, { toggleNavBar, setSelectedLabelId }] = useUiStore();
 
   const onDrawerItemSelected = (labelId) => {
+    navigate(labelId);
     setSelectedLabelId(labelId);
   }
 
@@ -56,10 +58,10 @@ export default function NavDrawer() {
       <div className={classes.toolbar} />
       <List>
         <DrawerItem
-          text={"MainDrawer-1"}
-          isSelected={selectedLabelId === ""}
+          text={"Dashboard"}
+          isSelected={selectedLabelId === "/"}
           icon={<IdeaIcon htmlColor={theme.custom.palette.iconColor} />}
-          onClick={() => onDrawerItemSelected("")}
+          onClick={() => onDrawerItemSelected("/")}
         />
       </List>
       <Divider />
@@ -70,33 +72,19 @@ export default function NavDrawer() {
       </div>
       <List>
         <DrawerItem
-          key={'drawer-1'}
-          text={'drawer-1'}
+          key={'users'}
+          text={'Quản lý user'}
           icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
-          isSelected={selectedLabelId === 'drawer-1'}
-          onClick={() => onDrawerItemSelected('drawer-1')}
+          isSelected={selectedLabelId === 'users'}
+          onClick={() => onDrawerItemSelected('users')}
         />
-        <DrawerItem
+        {/*<DrawerItem
           key={'drawer-2'}
           text={'drawer-2'}
           icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
           isSelected={selectedLabelId === 'drawer-2'}
           onClick={() => onDrawerItemSelected('drawer-2')}
-        />
-        <DrawerItem
-          key={'drawer-3'}
-          text={'drawer-3'}
-          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
-          isSelected={selectedLabelId === 'drawer-3'}
-          onClick={() => onDrawerItemSelected('drawer-3')}
-        />
-        <DrawerItem
-          key={'drawer-4'}
-          text={'drawer-4'}
-          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
-          isSelected={selectedLabelId === 'drawer-4'}
-          onClick={() => onDrawerItemSelected('drawer-4')}
-        />
+        />*/}
       </List>
     </Drawer>
   );
