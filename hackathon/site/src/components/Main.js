@@ -4,11 +4,14 @@ import NavDrawer from "./navdrawer/NavDrawer";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Loading from "./Loading";
-import {  UiProvider, UserProvider, useUserStore } from "../store";
-import { ThemeProvider, CssBaseline } from "@material-ui/core";
+import {  UiProvider, UserProvider, useUserStore, useUiStore } from "../store";
+import { ThemeProvider, CssBaseline, Typography, Paper, Grid, useMediaQuery, Breadcrumbs , Link } from "@material-ui/core";
 import { dark, light } from "../theme";
 import APPCONFIG from '../constant/appConfig';
 import useAxios from "axios-hooks";
+import { Router } from "@reach/router";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Users from "./Users";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -46,18 +49,74 @@ function MainComponent({ todos, labels, user }) {
     )
 }
 
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  content: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: theme.mixins.drawer.minWidth - theme.spacing(2.5),
+    marginRight: -1 * theme.spacing(3)
+  },
+  contentShift: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: 0
+  },
+  mainContainer: {
+    display: "flex",
+    padding: theme.spacing(4, 0),
+    margin: theme.spacing(0, 1)
+  },
+  mainWrapper: {
+    flex: 1,
+    maxWidth: theme.spacing(100),
+    margin: "0 auto"
+  },
+}));
+
 function ThemeControlledComponent() {
+    const classes = useStyles();
     const [{ isDarkMode }] = useUserStore();
-    return (
-        <ThemeProvider theme={isDarkMode ? dark : light}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            <AppBar />
-            <NavDrawer />
-            <Container maxWidth={false}>
-                <Box mt={8}>
-                </Box>
-            </Container>
-        </ThemeProvider>
-    );
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+    const [{ isNavBarOpen }] = useUiStore();
+
+  return (
+    <ThemeProvider theme={isDarkMode ? dark : light}>
+      <CssBaseline />
+      <AppBar />
+      <NavDrawer />
+      <Container maxWidth={false}>
+        <Box mt={8}>
+          <main>
+            <div
+              className={
+                isMobile || !isNavBarOpen ? classes.contentShift : classes.content
+              }
+            >
+              <div className={classes.mainContainer}>
+                <div className={classes.mainWrapper}>
+                  <Router>
+                    <Users path="users" />
+                  </Router>
+                </div>
+              </div>
+            </div>
+          </main>
+        </Box>
+      </Container>
+    </ThemeProvider>
+  );
 }

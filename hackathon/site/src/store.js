@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useReducer } from 'react';
+import { useLocation } from "@reach/router";
 
 const TodosContext = createContext([]);
 const LabelsContext = createContext([]);
@@ -54,9 +55,11 @@ export function UserProvider({ children, user }) {
 }
 
 export function UiProvider({ children }) {
+    const location = useLocation();
+    const currentRoute = location.pathname == "/" && "/" || location.pathname.substring(1);
     const [isNavBarOpen, setNavBarOpen] = useState(true);
     const [noteInEditMode, setNoteInEditMode] = useState("");
-    const [selectedLabelId, setSelectedLabelId] = useState("");
+    const [selectedLabelId, setSelectedLabelId] = useState(currentRoute);
     const uiValue = [{
         isNavBarOpen,
         noteInEditMode,

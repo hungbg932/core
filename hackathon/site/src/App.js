@@ -17,7 +17,7 @@ function App() {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Router>
-          <Main path="/" />
+          <Main path="/*" />
           <Login path="/login" />
           <Register path="/register" />
         </Router>
