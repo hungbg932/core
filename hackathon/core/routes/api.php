@@ -1,5 +1,6 @@
 <?php
-
+// header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');header('Access-Control-Allow-Headers:X-CSRF-TOKEN, Origin, X-Requested-With, Content-Type,Accept, Authortization');
+// header('Access-Control-Allow-Origin: *');
 use Illuminate\Http\Request;
 
 /*
