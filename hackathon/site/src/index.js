@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import setAuthToken from './utils/setAuthToken';
+
+const user = JSON.parse(window.sessionStorage.getItem('user'));
+if (typeof(user) !== 'undefined' && user !== null ){
+  // Set auth token header
+  setAuthToken(user.token);
+}
 
 ReactDOM.render(
   <React.StrictMode>
