@@ -1,5 +1,7 @@
-import React from "react";
+// import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from 'react-redux';
+import * as reportActions from '../../actions/reportActions';
 import {
   Drawer,
   List,
@@ -33,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar
 }));
 
-export default function NavDrawer() {
+function NavDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -42,7 +44,10 @@ export default function NavDrawer() {
   const onDrawerItemSelected = (labelId) => {
     navigate(labelId);
     setSelectedLabelId(labelId);
-  }
+    if(labelId === "list_report") {
+      props.getAllReport();
+    }
+  };
 
   return (
     <Drawer
@@ -78,6 +83,13 @@ export default function NavDrawer() {
           isSelected={selectedLabelId === 'users'}
           onClick={() => onDrawerItemSelected('users')}
         />
+        <DrawerItem
+          key={'list_report'}
+          text={'Danh sách báo cáo'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'list_report'}
+          onClick={() => onDrawerItemSelected('list_report')}
+        />
         {/*<DrawerItem
           key={'drawer-2'}
           text={'drawer-2'}
@@ -89,3 +101,18 @@ export default function NavDrawer() {
     </Drawer>
   );
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  };
+};
+
+const mapDispatchToProps = (dispatch) =>  {
+  return {
+    getAllReport: () => {
+      dispatch(reportActions.getAllReport());
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavDrawer);
