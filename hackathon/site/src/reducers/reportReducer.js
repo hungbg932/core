@@ -2,7 +2,7 @@ import * as types from '../constant/actionTypes';
 
 const initialState = {
   list: {
-    data: [{ id: 1, stt: 1, date: '24/08/2021', title: 'Báo cáo 1' }]
+    data: []
   }
 };
 
