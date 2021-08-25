@@ -12,6 +12,7 @@ import useAxios from "axios-hooks";
 import { Router } from "@reach/router";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Users from "./Users";
+import DanhSachBaoCao from "./DanhSachBaoCao";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainWrapper: {
     flex: 1,
-    maxWidth: theme.spacing(100),
+    maxWidth: theme.spacing(175),
     margin: "0 auto"
   },
 }));
@@ -110,6 +111,9 @@ function ThemeControlledComponent() {
                 <div className={classes.mainWrapper}>
                   <Router>
                     <Users path="users" />
+                  </Router>
+                  <Router>
+                    <DanhSachBaoCao path="list_report" />
                   </Router>
                 </div>
               </div>

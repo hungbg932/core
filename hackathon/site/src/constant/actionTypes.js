@@ -1,2 +1,5 @@
 export const LOGIN_STATUS = 'LOGIN_STATUS';
 export const RESET_LOGIN_STATUS = 'RESET_LOGIN_STATUS';
+
+//report actions
+export const GET_ALL_REPORT_SUCCESS = 'GET_ALL_REPORT_SUCCESS';
