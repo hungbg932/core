@@ -14,6 +14,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import UserList from "./User/UserList";
 import DanhSachBaoCao from "./DanhSachBaoCao";
 import Report from "./Report";
+import Team from "./Team";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -119,6 +120,9 @@ function ThemeControlledComponent() {
                   </Router>
                   <Router>
                     <Report path="report" />
+                  </Router>
+                   <Router>
+                    <Team path="team" />
                   </Router>
                 </div>
               </div>
