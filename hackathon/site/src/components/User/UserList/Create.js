@@ -128,6 +128,19 @@ export default function (props) {
         {...register("email", { required: true })}
       />
       
+      <TextField 
+        InputLabelProps={{
+          shrink: true,
+        }}
+        name="dob" 
+        label="Ngày sinh" 
+        type="date" 
+        variant="outlined" 
+        fullWidth
+        margin="normal" 
+        {...register("dob", { required: true })}
+      />
+      
       <TextField
         InputLabelProps={inputLabelProps}
         InputProps={inputProps}
