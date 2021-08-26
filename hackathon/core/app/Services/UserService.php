@@ -9,15 +9,12 @@ class UserService {
         $this->userRepository = $userRepository;
     }
     
-    public function getPartial($limit, $page, $keywords, $serviceId)
+    public function getAll($query)
     {
-        $data = $this->userRepository->getPartial($limit, $page, $keywords, $serviceId);
-        return $data;
-    }
-    
-    public function getAll()
-    {
-        $data = $this->userRepository->getAll();
+        $limit = $query['limit'] ?? 10;
+        $page = $query['page'] ?? 1;
+        $keywords = $query['keywords'] ?? '';
+        $data = $this->userRepository->getPartial($limit, $page, $keywords);
         return $data;
     }
     
@@ -40,6 +37,12 @@ class UserService {
     public function getById($id)
     {
         $data = $this->userRepository->getById($id);
+        return $data;
+    }
+    
+    public function getByEmail($email)
+    {
+        $data = $this->userRepository->getByEmail($email);
         return $data;
     }
 }

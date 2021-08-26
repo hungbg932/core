@@ -17,9 +17,10 @@ class UserController extends Controller
         return [];
     }
     
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $data = $this->userService->getAll();
+        $query = $request->query() ?? [];
+        $data = $this->userService->getAll($query);
         return $data;
     }
     
