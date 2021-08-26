@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import Container from "@material-ui/core/Container";
+import { connect } from 'react-redux';
 import { Paper, TextField, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "@reach/router";
-import useAxios from "axios-hooks";
-import Loading from "../Loading";
 import APPCONFIG from '../../constant/appConfig';
-import setAuthToken from '../../utils/setAuthToken';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import axios from "axios";
@@ -23,6 +18,11 @@ import {
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
+import SearchIcon from '@material-ui/icons/Search';
+import ChangeAlias from '../ChangeAlias';
+import * as reportActions from '../../actions/reportActions';
+
+const SU_DUNG = 0;
 
 const useStyles = makeStyles(theme => ({
     pageWrapper: {
@@ -43,9 +43,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function ({ navigate }) {
+function Report (props) {
     const classes = useStyles();
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState(moment());
     const [yesterday_summary, setYesterday_summary] = useState("");
     const [today_summary, setToday_summary] = useState("");
     const [blocking_summary, setBlocking_summary] = useState("");
@@ -53,15 +53,21 @@ export default function ({ navigate }) {
     const [other, setOther] = useState("");
     const [listReport, setListReport] = useState([]);
     const [detail, setDetail] = useState({});
+    const [fromDate, setFromDate] = useState(moment().subtract(1, 'months'));
+    const [toDate, setToDate] = useState(moment());
+    const [keyword, setKeyword] = useState('');
     
     React.useEffect(() => {
       getListData();
     }, []);
     
     const getListData=()=>{
-      axios.post(`${APPCONFIG.apiUri}report/getByFilter`).then((response) => {
-        setListReport(response.data);
-      });
+      let params = {
+        from_date: moment(fromDate).format('YYYY-MM-DD'),
+        to_date: moment(toDate).format('YYYY-MM-DD')
+      };
+      
+      props.getReportByFilter(params);
     }
     
     const getDetail = (id) =>{
@@ -90,11 +96,13 @@ export default function ({ navigate }) {
         params = {...params, created_by: user.user_id};
       }
       
-      axios.post(`${APPCONFIG.apiUri}report/${detail.id?('update/'+detail.id):'create'}`,params).then((response) => {
-        alert("Submited!");
-        setDataDetail({});
-        getListData();
-      });
+      if(detail.id){
+        props.updateReport(detail.id, params);
+      }
+      else{
+        props.createReport(params);
+      }
+      
     }
     
     const onSubmitClick = (event) => {
@@ -104,25 +112,97 @@ export default function ({ navigate }) {
     
     const onDelete = (event) => {
         event.preventDefault();
-        if (window.confirm('Are you sure you wish to delete this item?')){
-          axios.post(`${APPCONFIG.apiUri}report/delete/${detail.id}`).then((response) => {
-            setDataDetail({});
-            getListData();
-          });
-        }
+        props.deleteReport(detail.id);
     }
+    
+    React.useEffect(() => {
+      filterData(keyword);
+    }, [props.listByFilter]);
+    
+    React.useEffect(() => {
+      if(props.createResult.data.id){
+        alert("Created!");
+        setDataDetail({});
+        getListData();
+      }
+    }, [props.createResult]);
+    
+    React.useEffect(() => {
+      if(props.updateResult.data.id){
+        alert("Updated!");
+        setDataDetail({});
+        getListData();
+      }
+    }, [props.updateResult]);
+    
+    React.useEffect(() => {
+      if(props.deleteResult.data.id){
+        alert("Deleted!");
+        setDataDetail({});
+        getListData();
+      }
+    }, [props.deleteResult]);
+    
+    const filterData = (keyValue) =>{
+      let dataFilter = props.listByFilter.data;
+      if(keyValue){
+        dataFilter = dataFilter.filter(f=>ChangeAlias(f.created_by_name).toLowerCase().indexOf(ChangeAlias(keyValue).toLowerCase())>=0);
+      }
+      setListReport(dataFilter);
+    }
+    
+    const onChangeKeyword = (event) => {
+      setKeyword(event.target.value);
+      filterData(event.target.value);
+    };
     
     return (
         <div className={classes.pageWrapper}>
           <div style={{width: '100%'}}>
             <div style={{width: '30%', float: 'left'}}>
               <Paper elevation={3} style={{width: '100%'}}>
-                <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">List Report</Typography>
+                <div style = {{width: '100%', padding: '0 10px 0 10px'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="dd/MM/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="Từ ngày"
+                      value={fromDate}
+                      onChange={e=>setFromDate(e)}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      style={{marginTop: '0px', width: '50%'}}
+                    />
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="dd/MM/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="Đến ngày"
+                      value={toDate}
+                      onChange={e=>setToDate(e)}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      style={{marginTop: '0px', width: '50%'}}
+                    />
+                  </MuiPickersUtilsProvider>
+                  <TextField placeholder="Tìm kiếm" style={{width: '70%'}} onChange={onChangeKeyword}/>
+                  <Button type="submit" size="small" onClick={() => getListData()} variant="contained" startIcon={<SearchIcon />}
+                        style={{width: '30%'}} >Tìm</Button>
+                </div>
+                
                 <List component="nav" aria-label="secondary mailbox folders">
                   {
                     listReport.map(item=>{
                       return  <ListItem button style={{backgroundColor: detail.id === item.id ? '#feefc3' : ''}}>
-                                <ListItemText primary={moment(item.date).format('DD/MM/YYYY')} onClick={()=>getDetail(item.id)} />
+                                <ListItemText primary={<div><div style={{width: '100px', float: 'left'}}>{moment(item.date).format('DD/MM/YYYY')}</div><div>{item.created_by_name}</div></div>} 
+                                onClick={()=>getDetail(item.id)} />
                               </ListItem>
                     })
                   }
@@ -169,9 +249,9 @@ export default function ({ navigate }) {
                       
                       <div style={{width: '100%'}}>
                       <Button type="submit" size="large" onClick={(e) => onSubmitClick(e)} variant="contained" startIcon={<SaveIcon />}
-                        disabled={(yesterday_summary === "" && today_summary === "" && blocking_summary === "" && related_tasks === "" && other === "") || date === null} >Save</Button>
-                      <Button type="submit" size="large" onClick={() => onDelete()} variant="contained" startIcon={<DeleteIcon />}
-                        disabled={!detail.id} style={{marginLeft: '5px'}}>Delete</Button>
+                        disabled={(yesterday_summary === "" && today_summary === "" && blocking_summary === "" && related_tasks === "" && other === "") || date === null || detail.status !== SU_DUNG} >Save</Button>
+                      <Button type="submit" size="large" onClick={(e) => onDelete(e)} variant="contained" startIcon={<DeleteIcon />}
+                        disabled={!detail.id || detail.status !== SU_DUNG} style={{marginLeft: '5px'}}>Delete</Button>
                       <Button type="submit" size="large" onClick={() => setDataDetail({})} variant="contained" startIcon={<CancelIcon />}
                         disabled={yesterday_summary === "" && today_summary === "" && blocking_summary === "" && related_tasks === "" && other === ""} style={{marginLeft: '5px'}} >Cancel</Button>
                         
@@ -183,3 +263,31 @@ export default function ({ navigate }) {
         </div>
     )
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    listByFilter: state.report.listByFilter,
+    createResult: state.report.createResult,
+    updateResult: state.report.updateResult,
+    deleteResult: state.report.deleteResult
+  };
+};
+
+const mapDispatchToProps = (dispatch) =>  {
+  return {
+    getReportByFilter: (params) => {
+      dispatch(reportActions.getReportByFilter(params));
+    },
+    createReport: (params) => {
+      dispatch(reportActions.createReport(params));
+    },
+    updateReport: (id, params) => {
+      dispatch(reportActions.updateReport(id, params));
+    },
+    deleteReport: (params) => {
+      dispatch(reportActions.deleteReport(params));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Report);
