@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import userApi from '../../../api/userApi';
+import teamApi from '../../api/teamApi';
 import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
 import { Button, TextField, ButtonGroup } from '@material-ui/core';
@@ -13,7 +13,7 @@ import Update from './Update';
 const useStyles = makeStyles((theme) => ({
   refreshBtn: {
     width: 150,
-    marginLeft: '20px'
+    marginLeft: '10px'
   },
   filterDiv: {
     marginBottom: '15px'
@@ -39,43 +39,38 @@ function getModalStyle() {
   };
 }
 
-function UserList() {
+function TeamList() {
   
   const columns = [
     { field: 'id', headerName: 'ID', width: 50 },
     {
-      field: 'image_url',
-      headerName: 'Hình đại diện',
-      width: 250,
-    },
-    {
       field: 'name',
-      headerName: 'Họ tên',
+      headerName: 'name',
       width: 300,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      type: 'number',
-      width: 150,
+      field: 'description',
+      headerName: 'description',
+      type: 'description',
+      width: 300,
     },
     {
       field: 'function',
       headerName: 'Chức năng',
       description: 'Chức năng',
       sortable: false,
-      width: 200,
+      width: 300,
       renderCell: (params) => <Button color="secondary" onClick={() => HandleEdit(params.row)}>Sửa</Button>
     },
   ];
 
   const HandleEdit = async(row) => {
-    const response = await userApi.detail(row.id);
+    const response = await teamApi.detail(row.id);
     setDetail(response);
     setVisibleUpdateModal(true);
   }
 
-  const [users, setUserList] = useState([]);
+  const [team, setTeamList] = useState([]);
   const [detail, setDetail] = useState([]);
   const [keywords, setKeywords] = useState("");
   const [pagination, setPagination] = useState({
@@ -133,24 +128,24 @@ function UserList() {
   }
   
   useEffect(() => {
-    async function fetchUserList() {
+    async function fetchTeamList() {
       try {
-        const response = await userApi.getAll(filters);
+        const response = await teamApi.getAll(filters);
         const { data, pagination } = response;
-        setUserList(data);
+        setTeamList(data);
         setPagination(pagination);
       } catch (error) {
         console.log('Failed to fetch post list: ', error.message);
       }
     }
 
-    fetchUserList();
+    fetchTeamList();
   }, [filters]);
   
   const classes = useStyles();
   
   return (
-    <div style={{ height: 600, width: '100%' }}>
+    <div style={{ height: 600, width: '70%', marginLeft:120 }}>
       <div className={classes.filterDiv}>
         <TextField value={keywords} onChange={onChangeKeywords} style={{ width: '40%' }} size="small" id="filled-basic" label="Tìm kiếm" variant="filled" />
         <Button type="submit" size="large" className={classes.refreshBtn} onClick={() => onSearch()} variant="contained" startIcon={<SearchIcon />}>Tìm</Button>
@@ -158,7 +153,7 @@ function UserList() {
         <Button type="submit" size="large" className={classes.refreshBtn} onClick={() => onRefresh()} variant="contained" startIcon={<RefreshIcon />}>Làm mới</Button>
       </div>
       <DataGrid
-        rows={users}
+        rows={team}
         columns={columns}
         pageSize={pagination.limit}
         rowsPerPageOptions={[pagination.limit]}
@@ -191,4 +186,4 @@ function UserList() {
   );
 }
 
-export default UserList;
+export default TeamList;

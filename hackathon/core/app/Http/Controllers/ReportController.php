@@ -14,10 +14,10 @@ class ReportController extends Controller
         $this->reportService = $reportService;
     }
     
-    public function getPartial($teamId)
+    public function getPartial(Request $request)
     {
-        if(!$teamId) return [];
-        $data = $this->reportService->getPartial($teamId);
+        $input = $request->all();
+        $data = $this->reportService->getPartial($input);
         return $data;
     }
     
@@ -61,8 +61,6 @@ class ReportController extends Controller
             if($isNumericId) {
                 $data = $this->reportService->update($id, $input);
                 return response()->json($data);
-            } else {
-                $this->setStatusCode(400);
             }
         } catch (\Exception $ex) {
             return $ex;
@@ -70,12 +68,15 @@ class ReportController extends Controller
     }
     
     public function delete($id) {
-        $isNumericId = is_numeric($id);
-        
-        if($isNumericId) {
-            $this->reportService->delete($id);
-        }
-        
-        return response()->json([]);        
+        try {
+            $isNumericId = is_numeric($id);
+            
+            if($isNumericId) {
+                $data = $this->reportService->delete($id);
+                return response()->json($data);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }     
     }
 }

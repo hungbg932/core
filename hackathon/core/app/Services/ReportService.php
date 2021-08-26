@@ -10,9 +10,9 @@ class ReportService {
         $this->reportRepository = $reportRepository;
     }
     
-    public function getPartial($teamId)
+    public function getPartial($input)
     {
-        $data = $this->reportRepository->getPartial($teamId);
+        $data = $this->reportRepository->getPartial($input);
         return $data;
     }
     
@@ -44,6 +44,6 @@ class ReportService {
     public function delete($id)
     {
         $this->reportRepository->delete($id);
-
+        return ['id'=>$id];
     }
 }
