@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import setAuthToken from './utils/setAuthToken';
+import { Slide, Button } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
 
 const user = JSON.parse(window.sessionStorage.getItem('user'));
 if (typeof(user) !== 'undefined' && user !== null ){
@@ -11,9 +13,30 @@ if (typeof(user) !== 'undefined' && user !== null ){
   setAuthToken(user.token);
 }
 
+const notistackRef = React.createRef();
+const onClickDismiss = key => () => { 
+    notistackRef.current.closeSnackbar(key);
+}
+
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SnackbarProvider 
+      ref={notistackRef}
+      maxSnack={4}
+      anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+      }}
+      TransitionComponent={Slide}
+      action={(key) => (
+          <Button onClick={onClickDismiss(key)}>
+              Dismiss
+          </Button>
+      )}
+    >
+      <App />
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

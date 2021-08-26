@@ -27,9 +27,13 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $input = $request->all();
-        
+        $email = $input['email'];
+        $checkEmail = $this->userService->checkEmailbyEmail($email);
+        if(!empty($checkEmail)) {
+            return ['error' => 'Email đã tồn tại'];
+        }
         $data = $this->userService->create($input);
-        return $data;
+        return ['success'];
     }
     
     public function update($id, Request $request)
