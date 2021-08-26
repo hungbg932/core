@@ -1,5 +1,8 @@
-import React from "react";
+// import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from 'react-redux';
+import * as reportActions from '../../actions/reportActions';
+import moment from 'moment';
 import {
   Drawer,
   List,
@@ -33,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar
 }));
 
-export default function NavDrawer() {
+function NavDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -42,7 +45,11 @@ export default function NavDrawer() {
   const onDrawerItemSelected = (labelId) => {
     navigate(labelId);
     setSelectedLabelId(labelId);
-  }
+    if(labelId === "list_report") {
+      const userInfor = JSON.parse(window.sessionStorage.getItem('userInfor'));
+      props.getPartial(userInfor.team_id);
+    }
+  };
 
   return (
     <Drawer
@@ -56,7 +63,7 @@ export default function NavDrawer() {
       }}
     >
       <div className={classes.toolbar} />
-      <List>
+      {/*<List>
         <DrawerItem
           text={"Dashboard"}
           isSelected={selectedLabelId === "/"}
@@ -69,7 +76,7 @@ export default function NavDrawer() {
         <Typography variant="overline" component="span">
           SubListDrawer
         </Typography>
-      </div>
+      </div>*/}
       <List>
         <DrawerItem
           key={'users'}
@@ -77,6 +84,20 @@ export default function NavDrawer() {
           icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
           isSelected={selectedLabelId === 'users'}
           onClick={() => onDrawerItemSelected('users')}
+        />
+        <DrawerItem
+          key={'list_report'}
+          text={'Danh sách báo cáo'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'list_report'}
+          onClick={() => onDrawerItemSelected('list_report')}
+        />
+        <DrawerItem
+          key={'report'}
+          text={'Báo cáo'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'report'}
+          onClick={() => onDrawerItemSelected('report')}
         />
         {/*<DrawerItem
           key={'drawer-2'}
@@ -89,3 +110,18 @@ export default function NavDrawer() {
     </Drawer>
   );
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+  };
+};
+
+const mapDispatchToProps = (dispatch) =>  {
+  return {
+    getPartial: (teamId) => {
+      dispatch(reportActions.getPartial(teamId));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavDrawer);

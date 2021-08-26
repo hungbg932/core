@@ -48,4 +48,9 @@ class UserRepository extends BaseRepository
                 ->where('id', $id)
                 ->update($params);
     }
+    
+    public function getByEmail($email)
+    {
+        return $this->model->where('email', $email)->first();
+    }
 }
