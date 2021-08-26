@@ -7,6 +7,9 @@ import useAxios from "axios-hooks";
 import { useForm, Controller } from "react-hook-form";
 import userApi from '../../../api/userApi';
 import { useSnackbar } from 'notistack';
+import moment from 'moment';
+
+const dateFormat = "YYYY-MM-DD";
 
 const useStyles = makeStyles(theme => ({
   boxWrapper: {
@@ -130,6 +133,19 @@ export default function (props) {
         fullWidth margin="normal" 
         {...register("email", { required: true })}
         defaultValue={detail.email}
+      />
+      <TextField 
+        InputLabelProps={{
+          shrink: true,
+        }}
+        name="dob" 
+        label="Ngày sinh" 
+        type="date" 
+        variant="outlined" 
+        fullWidth
+        margin="normal" 
+        {...register("dob", { required: true })}
+        defaultValue={moment(detail.dob).format(dateFormat)}
       />
       <TextField
         InputLabelProps={inputLabelProps}
