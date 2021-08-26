@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar
 }));
 
-function NavDrawer(props) {
+export default function NavDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
@@ -45,10 +45,6 @@ function NavDrawer(props) {
   const onDrawerItemSelected = (labelId) => {
     navigate(labelId);
     setSelectedLabelId(labelId);
-    if(labelId === "list_report") {
-      const userInfor = JSON.parse(window.sessionStorage.getItem('userInfor'));
-      props.getPartial(userInfor.team_id);
-    }
   };
 
   return (
@@ -99,6 +95,13 @@ function NavDrawer(props) {
           isSelected={selectedLabelId === 'report'}
           onClick={() => onDrawerItemSelected('report')}
         />
+        <DrawerItem
+          key={'team'}
+          text={'Quản lí team'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'team'}
+          onClick={() => onDrawerItemSelected('team')}
+        />
         {/*<DrawerItem
           key={'drawer-2'}
           text={'drawer-2'}
@@ -110,18 +113,3 @@ function NavDrawer(props) {
     </Drawer>
   );
 }
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-  };
-};
-
-const mapDispatchToProps = (dispatch) =>  {
-  return {
-    getPartial: (teamId) => {
-      dispatch(reportActions.getPartial(teamId));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavDrawer);

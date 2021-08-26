@@ -44,6 +44,6 @@ class ReportService {
     public function delete($id)
     {
         $this->reportRepository->delete($id);
-
+        return ['id'=>$id];
     }
 }

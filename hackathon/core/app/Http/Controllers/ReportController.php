@@ -61,8 +61,6 @@ class ReportController extends Controller
             if($isNumericId) {
                 $data = $this->reportService->update($id, $input);
                 return response()->json($data);
-            } else {
-                $this->setStatusCode(400);
             }
         } catch (\Exception $ex) {
             return $ex;
@@ -70,12 +68,15 @@ class ReportController extends Controller
     }
     
     public function delete($id) {
-        $isNumericId = is_numeric($id);
-        
-        if($isNumericId) {
-            $this->reportService->delete($id);
-        }
-        
-        return response()->json([]);        
+        try {
+            $isNumericId = is_numeric($id);
+            
+            if($isNumericId) {
+                $data = $this->reportService->delete($id);
+                return response()->json($data);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }     
     }
 }
