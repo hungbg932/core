@@ -20,12 +20,24 @@ class UserService {
     
     public function create(array $input)
     {
+        $password = $input['password'];
+        if(!empty($password)) {
+            $input['password'] = \Hash::make($password);
+        }
+        
         $id = $this->userRepository->create($input);
         return $id;
     } 
     
     public function update($id, array $input)
     {
+        $password = $input['password'];
+        if(!empty($password)) {
+            $input['password'] = \Hash::make($password);
+        } else {
+            unset($input['password']);
+        }
+        
         $this->userRepository->update($id, $input);
     }
     
@@ -43,6 +55,12 @@ class UserService {
     public function getByEmail($email)
     {
         $data = $this->userRepository->getByEmail($email);
+        return $data;
+    }
+    
+    public function checkEmailbyEmail($email, $userId = 0)
+    {
+        $data = $this->userRepository->checkEmailbyEmail($email, $userId);
         return $data;
     }
 }

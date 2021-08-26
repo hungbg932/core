@@ -34,7 +34,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 Route::group(['middleware' => 'api', 'prefix' => 'users'], function ($router) {
     Route::get('', 'UserController@getAll');
     Route::post('create', 'UserController@create');
-    Route::post('update/{id', 'UserController@update');
+    Route::post('update/{id}', 'UserController@update');
     Route::get('getById/{id}', 'UserController@getById');
 });
 
@@ -45,4 +45,11 @@ Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
     Route::post('delete/{id}', 'ReportController@delete');
     Route::post('find/{id}', 'ReportController@find');
     Route::post('getByFilter', 'ReportController@getByFilter');
+});
+
+Route::group(['middleware' => 'api', 'prefix' => 'team'], function ($router) {
+    Route::get('getAll', 'TeamController@getAll');
+    Route::post('create', 'TeamController@create');
+    Route::post('update/{id}/{idUser}', 'TeamController@update');
+    Route::post('delete/{id}', 'TeamController@delete');
 });
