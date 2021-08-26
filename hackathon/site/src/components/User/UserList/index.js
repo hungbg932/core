@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import userApi from '../../../api/userApi';
+import teamApi from '../../../api/teamApi';
 import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
 import { Button, TextField, ButtonGroup } from '@material-ui/core';
@@ -76,6 +77,7 @@ function UserList() {
   }
 
   const [users, setUserList] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [detail, setDetail] = useState([]);
   const [keywords, setKeywords] = useState("");
   const [pagination, setPagination] = useState({
@@ -135,10 +137,13 @@ function UserList() {
   useEffect(() => {
     async function fetchUserList() {
       try {
-        const response = await userApi.getAll(filters);
+        const response = await userApi.getPartial(filters);
         const { data, pagination } = response;
         setUserList(data);
         setPagination(pagination);
+        
+        const listTeam = await teamApi.getAll();
+        setTeams(listTeam);
       } catch (error) {
         console.log('Failed to fetch post list: ', error.message);
       }
@@ -174,7 +179,7 @@ function UserList() {
         aria-describedby="simple-modal-description"
       >
         <div style={modalStyle} className={classes.paper}>
-          <Create onRefresh={onRefresh}/>
+          <Create onRefresh={onRefresh} teams={teams}/>
         </div>
       </Modal>
       <Modal
@@ -184,7 +189,7 @@ function UserList() {
         aria-describedby="simple-modal-description"
       >
         <div style={modalStyle} className={classes.paper}>
-          <Update onRefresh={onRefresh} detail={detail}/>
+          <Update onRefresh={onRefresh} detail={detail} teams={teams}/>
         </div>
       </Modal>
     </div>
