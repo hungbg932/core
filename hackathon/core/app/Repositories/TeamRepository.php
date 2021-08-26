@@ -14,6 +14,24 @@ class TeamRepository extends BaseRepository
         return Team::class;
     } 
     
+     public function getPartial($limit, $page, $keywords)
+    {
+        $column = [
+            '*',
+        ];
+        
+        $data = $this->model->query();
+        
+        if(!empty($keywords)) {
+            $data->where(function($subQuery) use($keywords) {
+                $subQuery->where('name', 'like', "%$keywords%");
+                $subQuery->orWhere('description', 'like', "%$keywords%");
+            });
+        }
+        
+        $data->orderBy('id', 'asc');
+        return Util::getPartial($data, $limit, $page, $column);
+    }
     public function getAll()
     {
         $data = $this->model->get();
@@ -30,7 +48,7 @@ class TeamRepository extends BaseRepository
     
     public function getById($id)
     {
-        $data = $this->model->where('id', $id)->get();
+        $data = $this->model->where('id', $id)->first();
          return $data;
         
     }

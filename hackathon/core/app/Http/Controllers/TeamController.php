@@ -20,16 +20,17 @@ class TeamController extends Controller
         return [];
     }
     
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $data = $this->teamService->getAll();
+       $query = $request->query() ?? [];
+        $data = $this->teamService->getAll($query);
         return $data;
     }
     
     public function create(Request $request)
     {
         $input = $request->all();
-        $user = $this->userService->getByEmail($input['id']);  // id user
+        $user = $this->userService->getById($input['id']);  // id user
         if($user['role_id'] == 1){
             $data = $this->teamService->create($input);
         }else{

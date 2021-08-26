@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "@reach/router";
 import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
-import userApi from '../../../api/userApi';
+import teamApi from '../../api/teamApi';
 import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(theme => ({
@@ -76,68 +76,52 @@ export default function (props) {
       notchedOutline: classes.inputNotchedOutline,
       focused: classes.inputFocused
     }
-  };
-  
+  }
   const inputLabelProps = {
     classes: {
       root: classes.inputLabelRoot,
       focused: classes.inputFocused
     }
-  };
-  
-  const { detail } = props;
+  }
   
   const onSubmit = async(data) => {
-    const result = await userApi.update(detail.id, data);
+    const user = JSON.parse(window.sessionStorage.getItem('userInfor'));
+    data['id'] = user.id;
+    const result = await teamApi.create(data);
     if(result.error) {//have error
       enqueueSnackbar(result.error, { 
           variant: 'error',
       });
     } else {//create success
       props.onRefresh && props.onRefresh();
-      enqueueSnackbar('Sửa tài khoản thành công', { 
+      enqueueSnackbar('Thêm mới thành công', { 
           variant: 'success',
       });
     }
   };
   
-  
   return (
-    console.log(detail),
     <form className={classes.boxWrapper} onSubmit={handleSubmit(onSubmit)}>
-      <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Sửa user</Typography>
+      <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Thêm mới </Typography>
       <TextField 
         InputLabelProps={inputLabelProps} 
         InputProps={inputProps} 
         name="name" 
-        label="Tên" 
+        label="name" 
         type="name" 
         variant="outlined" 
         fullWidth margin="normal" 
         {...register("name", { required: true })}
-        defaultValue={detail.name}
       />
       <TextField 
         InputLabelProps={inputLabelProps} 
         InputProps={inputProps} 
-        name="email" 
-        label="Email" 
-        type="email" 
+        name="description" 
+        label="description" 
+        type="description" 
         variant="outlined" 
         fullWidth margin="normal" 
-        {...register("email", { required: true })}
-        defaultValue={detail.email}
-      />
-      <TextField
-        InputLabelProps={inputLabelProps}
-        InputProps={inputProps}
-        name="password"
-        label="Password"
-        type="password"
-        variant="outlined"
-        fullWidth 
-        margin="normal"
-        {...register("password")}
+        {...register("description", { required: true })}
       />
       <Button 
         classes={{ root: classes.loginButtonRoot, label: classes.loginButtonText }}
@@ -148,7 +132,7 @@ export default function (props) {
         fullWidth
         size="large"
       >
-        Sửa
+        Thêm mới
       </Button>
     </form>
   );

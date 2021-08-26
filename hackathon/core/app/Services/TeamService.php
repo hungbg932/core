@@ -9,9 +9,12 @@ class TeamService {
         $this->teamRepository = $teamRepository;
     }
     
-    public function getAll()
+    public function getAll($query)
     {
-        $data = $this->teamRepository->getAll();
+         $limit = $query['limit'] ?? 10;
+        $page = $query['page'] ?? 1;
+        $keywords = $query['keywords'] ?? '';
+        $data = $this->teamRepository->getPartial($limit, $page, $keywords);
         return $data;
     }
     

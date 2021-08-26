@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "@reach/router";
 import useAxios from "axios-hooks";
 import { useForm } from "react-hook-form";
-import userApi from '../../../api/userApi';
+import teamApi from '../../api/teamApi';
 import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(theme => ({
@@ -86,16 +86,17 @@ export default function (props) {
   };
   
   const { detail } = props;
-  
+  const user = JSON.parse(window.sessionStorage.getItem('userInfor'));
+  const userId = user.id;
   const onSubmit = async(data) => {
-    const result = await userApi.update(detail.id, data);
+    const result = await teamApi.update(detail.id, userId, data);
     if(result.error) {//have error
       enqueueSnackbar(result.error, { 
           variant: 'error',
       });
     } else {//create success
       props.onRefresh && props.onRefresh();
-      enqueueSnackbar('Sửa tài khoản thành công', { 
+      enqueueSnackbar('Sửa thành công', { 
           variant: 'success',
       });
     }
@@ -103,14 +104,13 @@ export default function (props) {
   
   
   return (
-    console.log(detail),
     <form className={classes.boxWrapper} onSubmit={handleSubmit(onSubmit)}>
-      <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Sửa user</Typography>
+      <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Sửa team</Typography>
       <TextField 
         InputLabelProps={inputLabelProps} 
         InputProps={inputProps} 
         name="name" 
-        label="Tên" 
+        label="name" 
         type="name" 
         variant="outlined" 
         fullWidth margin="normal" 
@@ -120,24 +120,13 @@ export default function (props) {
       <TextField 
         InputLabelProps={inputLabelProps} 
         InputProps={inputProps} 
-        name="email" 
-        label="Email" 
-        type="email" 
+        name="description" 
+        label="description" 
+        type="description" 
         variant="outlined" 
         fullWidth margin="normal" 
-        {...register("email", { required: true })}
-        defaultValue={detail.email}
-      />
-      <TextField
-        InputLabelProps={inputLabelProps}
-        InputProps={inputProps}
-        name="password"
-        label="Password"
-        type="password"
-        variant="outlined"
-        fullWidth 
-        margin="normal"
-        {...register("password")}
+        {...register("description", { required: true })}
+        defaultValue={detail.description}
       />
       <Button 
         classes={{ root: classes.loginButtonRoot, label: classes.loginButtonText }}
