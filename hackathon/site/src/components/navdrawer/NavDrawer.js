@@ -2,6 +2,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from 'react-redux';
 import * as reportActions from '../../actions/reportActions';
+import moment from 'moment';
 import {
   Drawer,
   List,
@@ -45,7 +46,8 @@ function NavDrawer(props) {
     navigate(labelId);
     setSelectedLabelId(labelId);
     if(labelId === "list_report") {
-      props.getAllReport();
+      const userInfor = JSON.parse(window.sessionStorage.getItem('userInfor'));
+      props.getPartial(userInfor.team_id);
     }
   };
 
@@ -61,7 +63,7 @@ function NavDrawer(props) {
       }}
     >
       <div className={classes.toolbar} />
-      <List>
+      {/*<List>
         <DrawerItem
           text={"Dashboard"}
           isSelected={selectedLabelId === "/"}
@@ -74,7 +76,7 @@ function NavDrawer(props) {
         <Typography variant="overline" component="span">
           SubListDrawer
         </Typography>
-      </div>
+      </div>*/}
       <List>
         <DrawerItem
           key={'users'}
@@ -109,8 +111,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) =>  {
   return {
-    getAllReport: () => {
-      dispatch(reportActions.getAllReport());
+    getPartial: (teamId) => {
+      dispatch(reportActions.getPartial(teamId));
     }
   };
 };

@@ -15,7 +15,7 @@ class ReportRepository extends BaseRepository
         return Report::class;
     } 
     
-    public function getAll()
+    public function getPartial($teamId)
     {
         $column = [
             'report.*',
@@ -25,7 +25,7 @@ class ReportRepository extends BaseRepository
         $data = $this->model
             ->leftJoin('user', 'user.id', '=', 'report.created_by')
             ->leftJoin('team', 'team.id', '=', 'user.team_id')
-            ->where('report.status', self::SU_DUNG)
+            ->where([['report.status', self::SU_DUNG], ['team.id', $teamId]])
             ->get($column);
         return $data;
     }
