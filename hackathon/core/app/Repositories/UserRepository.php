@@ -19,15 +19,14 @@ class UserRepository extends BaseRepository
         return $data;
     }
     
-    public function getPartial($keyword, $page, $limit)
+    public function getPartial($limit, $page, $keywords)
     {
         $column = [
             '*',
         ];
         
         $data = $this->model->query();
-
-        $data->orderBy('id', 'desc');
+        $data->orderBy('id', 'asc');
         return Util::getPartial($data, $limit, $page, $column);
     }
     
