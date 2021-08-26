@@ -46,3 +46,10 @@ Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
     Route::post('find/{id}', 'ReportController@find');
     Route::post('getByFilter', 'ReportController@getByFilter');
 });
+
+Route::group(['middleware' => 'api', 'prefix' => 'team'], function ($router) {
+    Route::get('getAll', 'TeamController@getAll');
+    Route::post('create', 'TeamController@create');
+    Route::post('update/{id}/{idUser}', 'TeamController@update');
+    Route::post('delete/{id}', 'TeamController@delete');
+});
