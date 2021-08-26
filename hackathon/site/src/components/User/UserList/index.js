@@ -150,7 +150,7 @@ function UserList() {
   const classes = useStyles();
   
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div style={{ height: 600, width: '100%' }}>
       <div className={classes.filterDiv}>
         <TextField value={keywords} onChange={onChangeKeywords} style={{ width: '40%' }} size="small" id="filled-basic" label="Tìm kiếm" variant="filled" />
         <Button type="submit" size="large" className={classes.refreshBtn} onClick={() => onSearch()} variant="contained" startIcon={<SearchIcon />}>Tìm</Button>
