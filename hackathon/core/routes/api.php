@@ -36,5 +36,11 @@ Route::group(['middleware' => 'api', 'prefix' => 'user'], function ($router) {
     Route::post('create', 'UserController@create');
     Route::post('update/{id', 'UserController@update');
     Route::get('getById/{id}', 'UserController@getById');
+});
+
+Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
+    Route::get('getPartial/{teamId}', 'ReportController@getPartial');
+    Route::post('create', 'ReportController@create');
+    Route::post('update/{id}', 'ReportController@update');
 
 });

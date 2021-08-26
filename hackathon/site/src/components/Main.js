@@ -12,6 +12,7 @@ import useAxios from "axios-hooks";
 import { Router } from "@reach/router";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Users from "./Users";
+import DanhSachBaoCao from "./DanhSachBaoCao";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -28,12 +29,13 @@ export default function ({ navigate }) {
     if (loading) {
         return (
             <Loading />
-        )
+        );
     } else if (Object.keys(result).length == 0 && requested) {
-        navigate("/login")
-        return (<React.Fragment></React.Fragment>)
+        navigate("/login");
+        return (<React.Fragment></React.Fragment>);
     } else {
-        return (<MainComponent todos={[]} labels={[]} user={[]} />)
+        sessionStorage.setItem('userInfor', JSON.stringify(result));
+        return (<MainComponent todos={[]} labels={[]} user={[]} />);
     }
 }
 
@@ -46,7 +48,7 @@ function MainComponent({ todos, labels, user }) {
                 </UiProvider>
             </UserProvider>
         </React.Fragment>
-    )
+    );
 }
 
 
@@ -76,12 +78,12 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContainer: {
     display: "flex",
-    padding: theme.spacing(4, 0),
+    padding: theme.spacing(2, 0),
     margin: theme.spacing(0, 1)
   },
   mainWrapper: {
     flex: 1,
-    maxWidth: theme.spacing(100),
+    maxWidth: theme.spacing(175),
     margin: "0 auto"
   },
 }));
@@ -110,6 +112,9 @@ function ThemeControlledComponent() {
                 <div className={classes.mainWrapper}>
                   <Router>
                     <Users path="users" />
+                  </Router>
+                  <Router>
+                    <DanhSachBaoCao path="list_report" />
                   </Router>
                 </div>
               </div>
