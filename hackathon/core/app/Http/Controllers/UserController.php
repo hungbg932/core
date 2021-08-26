@@ -39,6 +39,12 @@ class UserController extends Controller
     public function update($id, Request $request)
     {
         $input = $request->all();
+        $input = $request->all();
+        $email = $input['email'];
+        $checkEmail = $this->userService->checkEmailbyEmail($email, $id);
+        if(!empty($checkEmail)) {
+            return ['error' => 'Email đã tồn tại'];
+        }
         
         $data = $this->userService->update($id, $input);
         return $data;
