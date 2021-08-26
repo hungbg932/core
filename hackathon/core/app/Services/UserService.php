@@ -9,7 +9,7 @@ class UserService {
         $this->userRepository = $userRepository;
     }
     
-    public function getAll($query)
+    public function getPartial($query)
     {
         $limit = $query['limit'] ?? 10;
         $page = $query['page'] ?? 1;
