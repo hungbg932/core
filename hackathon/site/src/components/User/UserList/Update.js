@@ -103,7 +103,6 @@ export default function (props) {
   
   
   return (
-    console.log(detail),
     <form className={classes.boxWrapper} onSubmit={handleSubmit(onSubmit)}>
       <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Sửa user</Typography>
       <TextField 
