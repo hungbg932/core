@@ -42,5 +42,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
     Route::get('getPartial/{teamId}', 'ReportController@getPartial');
     Route::post('create', 'ReportController@create');
     Route::post('update/{id}', 'ReportController@update');
-
+    Route::post('delete/{id}', 'ReportController@delete');
+    Route::post('find/{id}', 'ReportController@find');
+    Route::post('getByFilter', 'ReportController@getByFilter');
 });
