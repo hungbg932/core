@@ -145,7 +145,7 @@ export default function (props) {
         fullWidth
         margin="normal" 
         {...register("dob", { required: true })}
-        defaultValue={moment(detail.dob).format(dateFormat)}
+        defaultValue={detail.dob && moment(detail.dob).format(dateFormat)}
       />
       <TextField
         InputLabelProps={inputLabelProps}
