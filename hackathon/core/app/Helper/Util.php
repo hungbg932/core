@@ -24,9 +24,12 @@ class Util{
 
         $result = [
             'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
+            'pagination'    => [
+                'page'          => $page,
+                'limit'         => $limit,
+                'totalPage'     => $totalPage,
+                'totalRecord'   => $totalRecord
+            ],
         ];
 
         return $result;

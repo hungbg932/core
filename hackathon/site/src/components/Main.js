@@ -11,8 +11,9 @@ import APPCONFIG from '../constant/appConfig';
 import useAxios from "axios-hooks";
 import { Router } from "@reach/router";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Users from "./Users";
+import UserList from "./User/UserList";
 import DanhSachBaoCao from "./DanhSachBaoCao";
+import Report from "./Report";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -111,10 +112,13 @@ function ThemeControlledComponent() {
               <div className={classes.mainContainer}>
                 <div className={classes.mainWrapper}>
                   <Router>
-                    <Users path="users" />
+                    <UserList path="users" />
                   </Router>
                   <Router>
                     <DanhSachBaoCao path="list_report" />
+                  </Router>
+                  <Router>
+                    <Report path="report" />
                   </Router>
                 </div>
               </div>

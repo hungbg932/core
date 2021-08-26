@@ -29,4 +29,41 @@ class ReportRepository extends BaseRepository
             ->get($column);
         return $data;
     }
+    
+    public function getByFilter($input) 
+    {
+        $model = $this->model;
+        
+        $data = $model->orderBy('id', 'desc')->get();
+        return $data;
+    }
+    
+    public function create(array $input) 
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function update($id, array $input) 
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->update($input);
+        }
+        return $result;
+    }
+    
+    public function delete($id) 
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->destroy($id);
+        }
+    }
+    
+    public function find($id) 
+    {
+        $result = $this->model->find($id); 
+        return $result; 
+    }
 }
