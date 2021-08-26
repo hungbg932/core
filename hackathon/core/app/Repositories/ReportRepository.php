@@ -10,6 +10,7 @@ class ReportRepository extends BaseRepository
 {
     const SU_DUNG = 0;
     const DELETED = 1;
+    const TRANG_THAI_DUYET = 2;
     public function getModel()
     {
         return Report::class;
@@ -32,9 +33,15 @@ class ReportRepository extends BaseRepository
     
     public function getByFilter($input) 
     {
-        $model = $this->model;
-        
-        $data = $model->orderBy('id', 'desc')->get();
+        $data = $this->model
+            ->leftJoin('user', 'user.id', '=', 'report.created_by');
+        if($input['from_date']){
+            $data = $data->whereDate('report.date', '>=', $input['from_date']);
+        }
+        if($input['to_date']){
+            $data = $data->whereDate('report.date', '<=', $input['to_date']);
+        }
+        $data = $data->orderBy('date', 'desc')->get(['report.*', 'user.name as created_by_name']);
         return $data;
     }
     
@@ -56,7 +63,7 @@ class ReportRepository extends BaseRepository
     public function delete($id) 
     {
         $result = $this->find($id);
-        if ($result) {
+        if ($result && $result->status === self::SU_DUNG ) {
             $result->destroy($id);
         }
     }
