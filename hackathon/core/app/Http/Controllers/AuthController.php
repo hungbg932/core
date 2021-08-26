@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Validator;
 use App\User;
+use App\Services\UserService;
 
 class AuthController extends Controller
 {
@@ -14,9 +15,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserService $userService)
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->userService = $userService;
     }
     
     /**
@@ -31,8 +33,8 @@ class AuthController extends Controller
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return $this->respondWithToken($token);
+        $user = $this->userService->getByEmail($credentials['email']);
+        return $this->respondWithToken($token, $user);
     }
     
     public function register()
@@ -61,8 +63,8 @@ class AuthController extends Controller
             if (! $token = auth('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
-    
-            return $this->respondWithToken($token);       
+            $user = $this->userService->getByEmail($credentials['email']);
+            return $this->respondWithToken($token, $user);       
         }
         else
             $response = ['success'=>false, 'data'=>'Register Failed'];
@@ -109,12 +111,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $user)
     {
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'user_id' => $user->id
         ]);
     }
 }

@@ -21,17 +21,61 @@ class ReportController extends Controller
         return $data;
     }
     
-    public function create(CreateFormRequest $request)
-    {
+    public function getByFilter(Request $request) {
         $input = $request->all();
-        $data = $this->reportService->create($input);
-        return $data;
+        
+        $data = $this->reportService->getByFilter($input);
+        return response()->json($data);
     }
     
-    public function update($id, Request $request)
-    {
+    public function find($id) {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->reportService->find($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return response()->json($data);
+    }
+    
+    public function create(Request $request) {
+        if ($request->isMethod('get')) {
+            return response()->json([]);
+        }
+        
         $input = $request->all();
-        $data = $this->reportService->update($id, $input);
-        return $data;
+        
+        $id = $this->reportService->create($input);
+        
+        return response()->json($id);
+    }
+    
+    public function update($id, Request $request) {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $data = $this->reportService->update($id, $input);
+                return response()->json($data);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function delete($id) {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $this->reportService->delete($id);
+        }
+        
+        return response()->json([]);        
     }
 }

@@ -92,6 +92,13 @@ function NavDrawer(props) {
           isSelected={selectedLabelId === 'list_report'}
           onClick={() => onDrawerItemSelected('list_report')}
         />
+        <DrawerItem
+          key={'report'}
+          text={'Báo cáo'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'report'}
+          onClick={() => onDrawerItemSelected('report')}
+        />
         {/*<DrawerItem
           key={'drawer-2'}
           text={'drawer-2'}

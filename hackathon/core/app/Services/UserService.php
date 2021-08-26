@@ -42,4 +42,10 @@ class UserService {
         $data = $this->userRepository->getById($id);
         return $data;
     }
+    
+    public function getByEmail($email)
+    {
+        $data = $this->userRepository->getByEmail($email);
+        return $data;
+    }
 }
