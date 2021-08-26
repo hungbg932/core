@@ -2,9 +2,9 @@ import * as types from '../constant/actionTypes';
 import APPCONFIG from '../constant/appConfig';
 import axios from 'axios';
 
-export const getAllReport = () => {
+export const getPartial = (teamId) => {
   return (dispatch) => {
-    return axios.get(`${APPCONFIG.apiUri}report/getAll`)
+    return axios.get(`${APPCONFIG.apiUri}report/getPartial/${teamId}`)
     .then(response => {
       dispatch(getSuccess(response.data));
     }).catch((error) => {

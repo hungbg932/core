@@ -109,7 +109,7 @@ export default function ({ navigate }) {
     if (result.token) {
         sessionStorage.setItem('user', JSON.stringify(result));
         setAuthToken(result.token);
-        navigate("/");
+        navigate("/users");
         return (<React.Fragment></React.Fragment>);
     } else if (loading) {
         return (<Loading />);

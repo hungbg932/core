@@ -14,9 +14,10 @@ class ReportController extends Controller
         $this->reportService = $reportService;
     }
     
-    public function getAll()
+    public function getPartial($teamId)
     {
-        $data = $this->reportService->getAll();
+        if(!$teamId) return [];
+        $data = $this->reportService->getPartial($teamId);
         return $data;
     }
     

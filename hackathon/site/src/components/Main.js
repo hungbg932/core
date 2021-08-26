@@ -29,12 +29,13 @@ export default function ({ navigate }) {
     if (loading) {
         return (
             <Loading />
-        )
+        );
     } else if (Object.keys(result).length == 0 && requested) {
-        navigate("/login")
-        return (<React.Fragment></React.Fragment>)
+        navigate("/login");
+        return (<React.Fragment></React.Fragment>);
     } else {
-        return (<MainComponent todos={[]} labels={[]} user={[]} />)
+        sessionStorage.setItem('userInfor', JSON.stringify(result));
+        return (<MainComponent todos={[]} labels={[]} user={[]} />);
     }
 }
 
@@ -47,7 +48,7 @@ function MainComponent({ todos, labels, user }) {
                 </UiProvider>
             </UserProvider>
         </React.Fragment>
-    )
+    );
 }
 
 
@@ -77,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mainContainer: {
     display: "flex",
-    padding: theme.spacing(4, 0),
+    padding: theme.spacing(2, 0),
     margin: theme.spacing(0, 1)
   },
   mainWrapper: {
