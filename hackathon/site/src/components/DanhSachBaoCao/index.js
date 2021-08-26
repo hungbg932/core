@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { connect } from 'react-redux';
 import { DataGrid } from '@material-ui/data-grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,6 +42,10 @@ function DanhSachBaoCao(props) {
   const [keywords, setKeywords] = useState("");
   const [dataSource, setDataSource] = useState([]);
   const [find, setFind] = useState(false);
+  
+  React.useEffect(() => {
+    onRefresh();
+  }, []);
   
   const classes = useStyles();
   

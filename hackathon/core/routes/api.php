@@ -34,7 +34,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 Route::group(['middleware' => 'api', 'prefix' => 'users'], function ($router) {
     Route::get('', 'UserController@getAll');
     Route::post('create', 'UserController@create');
-    Route::post('update/{id', 'UserController@update');
+    Route::post('update/{id}', 'UserController@update');
     Route::get('getById/{id}', 'UserController@getById');
 });
 
