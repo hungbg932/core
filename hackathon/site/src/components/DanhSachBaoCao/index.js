@@ -29,76 +29,92 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 100 },
-  { field: 'date', headerName: 'Date', width: 160 },
+  { field: 'date', headerName: 'Date', width: 160 ,
+    valueGetter: (params) =>
+      params.value ? moment(params.value).format('HH:mm DD/MM/YYYY') : ''
+  },
   { field: 'blocking_summary', headerName: 'Blocking summary', width: 300 },
   { field: 'user_name', headerName: 'Created by', width: 250 },
-  { field: 'created_at', headerName: 'Created at', width: 160 },
+  { field: 'created_at', headerName: 'Created at', width: 160 ,
+    valueGetter: (params) =>
+      params.value ? moment(params.value).format('HH:mm DD/MM/YYYY') : ''
+  },
   { field: 'team_name', headerName: 'Team', width: 300 }
 ];
 
 function DanhSachBaoCao(props) {
-  const [from, setFrom] = useState(moment().format('YYYY-MM-DD'));
-  const [to, setTo] = useState(moment().format('YYYY-MM-DD'));
-  const [keywords, setKeywords] = useState("");
-  const [dataSource, setDataSource] = useState([]);
+  const user = JSON.parse(window.sessionStorage.getItem('user')); 
+  const [filters, setFilters] = useState({
+    teamId: user.team_id,
+    from: moment().subtract(1, 'months').format('YYYY-MM-DD'),
+    to: moment().format('YYYY-MM-DD'),
+    keywords: "",
+    limit: 20,
+    page: 1,
+    totalRecord: 0
+  });
   const [find, setFind] = useState(false);
   
   React.useEffect(() => {
-    onRefresh();
-  }, []);
+    props.getPartial(filters);
+  }, [find]);
+  
+  React.useEffect(() => {
+    if(props.report_list.status) {
+      setFilters({
+        ...filters,
+        totalRecord: props.report_list.conditions.totalRecord
+      });
+      props.resetStatusReportList();
+    }
+  }, [props.report_list.status]);
   
   const classes = useStyles();
   
-  const onChangeFrom = (event) => {
-    setFrom(event.target.value);
-  };
-  
-  const onChangeTo = (event) => {
-    setTo(event.target.value);
-  };
-  
-  const onChangeKeywords = (event) => {
-    setKeywords(event.target.value);
-  };
-  
-  const onSearch = () => {
-    !find && setFind(true);
-    let data = [...props.report_list.data];
-    if(data.length > 0) {
-      let _from = moment(from);
-      let _to = moment(to);
-      if(_from > _to) {
-        _from = moment(to);
-        _to = moment(from);
-      }
-      const search = data.filter(item => {
-        return (item.date &&  moment(item.date) >= _from.startOf('day') && moment(item.date) <= _to.endOf('day')) || (keywords && item.blocking_summary && (item.blocking_summary.indexOf(keywords) > -1 || keywords.indexOf(item.blocking_summary) > -1));
-      });
-      setDataSource(search);
+  const onChangeDate = (value, key) => {
+    if(key === 'from') {
+      setFilters({...filters, from: value});
+    }
+    if(key === 'to') {
+      setFilters({...filters, to: value});
     }
   };
   
-  const onRefresh = () => {
-    setFrom(moment().format('YYYY-MM-DD'));
-    setTo(moment().format('YYYY-MM-DD'));
-    setKeywords("");
-    setDataSource([]);
-    setFind(false);
-    const userInfor = JSON.parse(window.sessionStorage.getItem('userInfor'));
-    props.getPartial(userInfor.team_id);
+  const onChangeKeywords = (event) => {
+    setFilters({...filters, keywords: event.target.value});
   };
   
-  const listReport = find? dataSource : props.report_list.data;
+  const handlePageChange = (newPage) => {
+    setFilters({...filters, page: newPage + 1});
+  };
+  
+  const onSearch = () => {
+    setFind(!find);
+  };
+  
+  const onRefresh = () => {
+    const params = {
+      ...filters,
+      from: moment().subtract(1, 'months').format('YYYY-MM-DD'),
+      to: moment().format('YYYY-MM-DD'),
+      keywords: "",
+      page: 1
+    };
+    setFilters(params);
+    props.getPartial(params);
+  };
+  
+  const listReport = props.report_list.data;
   return (
     <div style={{ height: 600, width: '100%' }}>
       <div className={classes.filterDiv}>
-        <TextField value={keywords} onChange={onChangeKeywords} style={{ width: '40%' }} size="small" id="filled-basic" label="Tìm kiếm" variant="filled" />
+        <TextField value={filters.keywords} onChange={onChangeKeywords} style={{ width: '40%' }} size="small" id="filled-basic" label="Tìm kiếm" variant="filled" />
         <TextField
           id="from"
-          onChange={onChangeFrom}
+          onChange={(value)=> onChangeDate(value, 'from')}
           label="Từ ngày"
           type="date"
-          value={from}
+          value={filters.from}
           className={classes.datePicker}
           InputLabelProps={{
             shrink: true,
@@ -106,10 +122,10 @@ function DanhSachBaoCao(props) {
         />
         <TextField
           id="to"
-          onChange={onChangeTo}
+          onChange={(value)=> onChangeDate(value, 'to')}
           label="Đến ngày"
           type="date"
-          value={to}
+          value={filters.to}
           className={classes.datePicker}
           InputLabelProps={{
             shrink: true,
@@ -121,7 +137,11 @@ function DanhSachBaoCao(props) {
       <DataGrid
         rows={listReport}
         columns={columns}
-        pageSize={20}
+        pageSize={filters.limit}
+        rowsPerPageOptions={[filters.limit]}
+        rowCount={filters.totalRecord}
+        paginationMode="server"
+        onPageChange={(newPage) => handlePageChange(newPage)}
         disableSelectionOnClick
       />
     </div>
@@ -136,8 +156,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) =>  {
   return {
-    getPartial: (teamId) => {
-      dispatch(reportActions.getPartial(teamId));
+    getPartial: (params) => {
+      dispatch(reportActions.getPartial(params));
+    },
+    resetStatusReportList: () => {
+      dispatch(reportActions.resetStatusReportList());
     }
   };
 };

@@ -2,7 +2,9 @@ import * as types from '../constant/actionTypes';
 
 const initialState = {
   list: {
-    data: []
+    data: [],
+    conditions: null,
+    status: false
   },
   listByFilter: {
     data: []
@@ -19,12 +21,23 @@ const initialState = {
 };
 
 const report = (state = initialState, action) => {
+  let list = state.list;
   switch (action.type) {
     case types.GET_ALL_REPORT_SUCCESS:
       return {
         ...state,
         list: {
-          data: action.payload.data
+          data: action.payload.data.data,
+          conditions: action.payload.data.conditions,
+          status: true
+        }
+      };
+    case types.RESET_STATUS_REPORT_LIST:
+      return {
+        ...state,
+        list: {
+          ...list,
+          status: false
         }
       };
     case types.GET_REPORT_BY_FILTER:

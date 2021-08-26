@@ -10,9 +10,9 @@ class ReportService {
         $this->reportRepository = $reportRepository;
     }
     
-    public function getPartial($teamId)
+    public function getPartial($input)
     {
-        $data = $this->reportRepository->getPartial($teamId);
+        $data = $this->reportRepository->getPartial($input);
         return $data;
     }
     
