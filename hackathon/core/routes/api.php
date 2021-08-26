@@ -39,7 +39,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'users'], function ($router) {
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
-    Route::get('getPartial/{teamId}', 'ReportController@getPartial');
+    Route::post('getPartial', 'ReportController@getPartial');
     Route::post('create', 'ReportController@create');
     Route::post('update/{id}', 'ReportController@update');
     Route::post('delete/{id}', 'ReportController@delete');

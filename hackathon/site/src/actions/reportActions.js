@@ -2,9 +2,9 @@ import * as types from '../constant/actionTypes';
 import APPCONFIG from '../constant/appConfig';
 import axios from 'axios';
 
-export const getPartial = (teamId) => {
+export const getPartial = (params) => {
   return (dispatch) => {
-    return axios.get(`${APPCONFIG.apiUri}report/getPartial/${teamId}`)
+    return axios.post(`${APPCONFIG.apiUri}report/getPartial`, params)
     .then(response => {
       dispatch(getSuccess(response.data));
     }).catch((error) => {
@@ -117,5 +117,11 @@ export const success = (type, data) => {
     payload: {
       data
     }
+  };
+};
+
+export const resetStatusReportList = () => {
+  return {
+    type: types.RESET_STATUS_REPORT_LIST
   };
 };
