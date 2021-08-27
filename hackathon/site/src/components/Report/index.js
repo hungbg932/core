@@ -184,7 +184,7 @@ function Report (props) {
           <div style={{width: '100%'}}>
             <div style={{width: '30%', float: 'left'}}>
               <Paper elevation={3} style={{width: '100%'}}>
-                <div style = {{width: '100%', padding: '0 10px 0 10px'}}>
+                <div style = {{width: '100%', padding: '10px 10px 0 10px'}}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
                       disableToolbar
@@ -238,7 +238,7 @@ function Report (props) {
             </div>
             <div style={{width: '70%', float: 'left', paddingLeft: '5px'}}>
               <Paper elevation={3} style={{width: '100%'}}>
-                  <form className={classes.boxWrapper} onSubmit={onSubmitClick}>
+                  <form className={classes.boxWrapper} onSubmit={onSubmitClick} style={{paddingTop: '10px'}}>
                       <Typography className={classes.textWelcome} color="textSecondary" variant="subtitle1">Daily Report</Typography>
                       <label style={{alignSelf: 'flex-start'}}>Date</label>
                       <div style={{width: '100%'}}>
