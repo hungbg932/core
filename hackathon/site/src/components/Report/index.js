@@ -125,7 +125,9 @@ function Report (props) {
     
     const onDelete = (event) => {
         event.preventDefault();
-        props.deleteReport(detail.id);
+        if(window.confirm("Xác nhận xóa?")){//dung tam confirm
+          props.deleteReport(detail.id);
+        }
     }
     
     React.useEffect(() => {
@@ -134,7 +136,7 @@ function Report (props) {
     
     React.useEffect(() => {
       if(props.createResult.data.id){
-        alert("Created!");
+        alert("Created!");//dung tam alert
         setDataDetail({});
         getListData();
       }
@@ -142,7 +144,7 @@ function Report (props) {
     
     React.useEffect(() => {
       if(props.updateResult.data.id){
-        alert("Updated!");
+        alert("Updated!");//dung tam alert
         setDataDetail({});
         getListData();
       }
@@ -150,7 +152,7 @@ function Report (props) {
     
     React.useEffect(() => {
       if(props.deleteResult.data.id){
-        alert("Deleted!");
+        alert("Deleted!");//dung tam alert
         setDataDetail({});
         getListData();
       }
