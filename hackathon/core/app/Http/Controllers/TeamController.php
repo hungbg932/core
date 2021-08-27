@@ -20,6 +20,13 @@ class TeamController extends Controller
         return [];
     }
     
+    public function getPartial(Request $request)
+    {
+       $query = $request->query() ?? [];
+        $data = $this->teamService->getPartial($query);
+        return $data;
+    }
+    
     public function getAll(Request $request)
     {
        $query = $request->query() ?? [];

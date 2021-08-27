@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 
 const teamApi = {
-  getAll: (params) => {
+  getPartial: (params) => {
     const url = '/team';
     return axiosClient.get(url, { params });
   },
@@ -15,6 +15,10 @@ const teamApi = {
   },
   detail: (id) => {
     const url = `/team/getById/${id}`;
+    return axiosClient.get(url);
+  },
+  getAll: () => {
+    const url = '/team/getAll';
     return axiosClient.get(url);
   },
 }
