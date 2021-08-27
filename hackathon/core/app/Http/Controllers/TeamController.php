@@ -41,7 +41,7 @@ class TeamController extends Controller
         if($user['role_id'] == 1){
             $data = $this->teamService->create($input);
         }else{
-            return ['error' => 'chi administrator duoc them'];
+            $data = 'chi addmin duoc tao'; 
         }
         return $data;
     }
@@ -53,7 +53,7 @@ class TeamController extends Controller
        if($user['role_id'] == 1){
              $data = $this->teamService->update($id, $input);
         }else{
-            return ['error' => 'chi administrator duoc sua'];
+            $data = 'chi addmin duoc sua'; 
         }
         return $data;
     }
