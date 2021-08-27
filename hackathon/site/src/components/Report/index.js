@@ -19,10 +19,13 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CancelIcon from '@material-ui/icons/Cancel';
 import SearchIcon from '@material-ui/icons/Search';
+import DoneIcon from '@material-ui/icons/Done';
 import ChangeAlias from '../ChangeAlias';
 import * as reportActions from '../../actions/reportActions';
 
 const SU_DUNG = 0;
+const TRANG_THAI_DUYET = 2;
+const ROLE_ID_ADMIN = 1;
 
 const useStyles = makeStyles(theme => ({
     pageWrapper: {
@@ -46,19 +49,24 @@ const useStyles = makeStyles(theme => ({
 function Report (props) {
     const classes = useStyles();
     const [date, setDate] = useState(moment());
-    const [yesterday_summary, setYesterday_summary] = useState("");
-    const [today_summary, setToday_summary] = useState("");
-    const [blocking_summary, setBlocking_summary] = useState("");
-    const [related_tasks, setRelated_tasks] = useState("");
+    const [yesterdaySummary, setYesterdaySummary] = useState("");
+    const [todaySummary, setTodaySummary] = useState("");
+    const [blockingSummary, setBlockingSummary] = useState("");
+    const [relatedTasks, setRelatedTasks] = useState("");
     const [other, setOther] = useState("");
     const [listReport, setListReport] = useState([]);
     const [detail, setDetail] = useState({});
     const [fromDate, setFromDate] = useState(moment().subtract(1, 'months'));
     const [toDate, setToDate] = useState(moment());
     const [keyword, setKeyword] = useState('');
+    const [roleId, setRoleId] = useState(0);
+    const [userId, setUserId] = useState(0);
     
     React.useEffect(() => {
       getListData();
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      setRoleId(user.role_id);
+      setUserId(user.user_id);
     }, []);
     
     const getListData=()=>{
@@ -79,21 +87,26 @@ function Report (props) {
     const setDataDetail=(data)=>{
         setDetail(data);
         setDate(data.date||new Date());
-        setYesterday_summary(data.yesterday_summary||'');
-        setToday_summary(data.today_summary||'');
-        setBlocking_summary(data.blocking_summary||'');
-        setRelated_tasks(data.related_tasks||'');
+        setYesterdaySummary(data.yesterday_summary||'');
+        setTodaySummary(data.today_summary||'');
+        setBlockingSummary(data.blocking_summary||'');
+        setRelatedTasks(data.related_tasks||'');
         setOther(data.other||'');
     }
     
     const doSubmit = () =>{
-      const user = JSON.parse(sessionStorage.getItem('user'));
-      let params = {date: moment(date).format('YYYY-MM-DD'), yesterday_summary, today_summary, blocking_summary, related_tasks, other};
+      let params = {
+        date: moment(date).format('YYYY-MM-DD'), 
+        yesterday_summary: yesterdaySummary, 
+        today_summary: todaySummary, 
+        blocking_summary: blockingSummary, 
+        related_tasks: relatedTasks, 
+        other};
       if(detail.id) {
-        params = {...params, verified_by: user.user_id};
+        params = {...params, verified_by: userId};
       }
       else {
-        params = {...params, created_by: user.user_id};
+        params = {...params, created_by: userId};
       }
       
       if(detail.id){
@@ -156,6 +169,16 @@ function Report (props) {
       filterData(event.target.value);
     };
     
+    const onApprove = (event) => {
+        event.preventDefault();
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const params = {
+          verified_by: user.user_id,
+          status: TRANG_THAI_DUYET};
+        
+        props.updateReport(detail.id, params);
+    }
+    
     return (
         <div className={classes.pageWrapper}>
           <div style={{width: '100%'}}>
@@ -201,7 +224,11 @@ function Report (props) {
                   {
                     listReport.map(item=>{
                       return  <ListItem button style={{backgroundColor: detail.id === item.id ? '#feefc3' : ''}}>
-                                <ListItemText primary={<div><div style={{width: '100px', float: 'left'}}>{moment(item.date).format('DD/MM/YYYY')}</div><div>{item.created_by_name}</div></div>} 
+                                <ListItemText primary={<div>
+                                                          <div style={{width: '100px', float: 'left'}}>{moment(item.date).format('DD/MM/YYYY')}</div>
+                                                          <div>{item.created_by_name}</div>
+                                                          <div style={{position: 'absolute', right: '3px', top: '8px'}}>{item.status === TRANG_THAI_DUYET ? <DoneIcon /> : ""}</div>
+                                                      </div>} 
                                 onClick={()=>getDetail(item.id)} />
                               </ListItem>
                     })
@@ -233,28 +260,32 @@ function Report (props) {
                         </MuiPickersUtilsProvider>
                       </div>
                       <label style={{alignSelf: 'flex-start'}}>Yesterday summary</label>
-                      <TextareaAutosize minRows={3} value={yesterday_summary} onChange={event => setYesterday_summary(event.target.value)} placeholder="yesterday summary" style={{width: '100%', marginBottom: '10px'}} />
+                      <TextareaAutosize minRows={3} value={yesterdaySummary} onChange={event => setYesterdaySummary(event.target.value)} placeholder="yesterday summary" style={{width: '100%', marginBottom: '10px'}} />
                       
                       <label style={{alignSelf: 'flex-start'}}>Today summary</label>
-                      <TextareaAutosize minRows={3} value={today_summary} onChange={event => setToday_summary(event.target.value)} placeholder="today summary" style={{width: '100%', marginBottom: '10px'}} />
+                      <TextareaAutosize minRows={3} value={todaySummary} onChange={event => setTodaySummary(event.target.value)} placeholder="today summary" style={{width: '100%', marginBottom: '10px'}} />
                       
                       <label style={{alignSelf: 'flex-start'}}>Blocking summary</label>
-                      <TextareaAutosize minRows={3} value={blocking_summary} onChange={event => setBlocking_summary(event.target.value)} placeholder="blocking summary" style={{width: '100%', marginBottom: '10px'}} />
+                      <TextareaAutosize minRows={3} value={blockingSummary} onChange={event => setBlockingSummary(event.target.value)} placeholder="blocking summary" style={{width: '100%', marginBottom: '10px'}} />
                       
                       <label style={{alignSelf: 'flex-start'}}>Related tasks</label>
-                      <TextareaAutosize minRows={3} value={related_tasks} onChange={event => setRelated_tasks(event.target.value)} placeholder="related tasks" style={{width: '100%', marginBottom: '10px'}} />
+                      <TextareaAutosize minRows={3} value={relatedTasks} onChange={event => setRelatedTasks(event.target.value)} placeholder="related tasks" style={{width: '100%', marginBottom: '10px'}} />
                       
                       <label style={{alignSelf: 'flex-start'}}>Other</label>
                       <TextareaAutosize minRows={3} value={other} onChange={event => setOther(event.target.value)} placeholder="other" style={{width: '100%', marginBottom: '10px'}} />
                       
                       <div style={{width: '100%'}}>
                       <Button type="submit" size="large" onClick={(e) => onSubmitClick(e)} variant="contained" startIcon={<SaveIcon />}
-                        disabled={(yesterday_summary === "" && today_summary === "" && blocking_summary === "" && related_tasks === "" && other === "") || date === null || detail.status !== SU_DUNG} >Save</Button>
+                        disabled={(yesterdaySummary === "" && todaySummary === "" && blockingSummary === "" && relatedTasks === "" && other === "") || date === null 
+                          || (detail.id && detail.status !== SU_DUNG) || (detail.created_by && detail.created_by !== userId)} >Save</Button>
                       <Button type="submit" size="large" onClick={(e) => onDelete(e)} variant="contained" startIcon={<DeleteIcon />}
-                        disabled={!detail.id || detail.status !== SU_DUNG} style={{marginLeft: '5px'}}>Delete</Button>
+                        disabled={!detail.id || detail.status !== SU_DUNG || (detail.created_by && detail.created_by !== userId)} style={{marginLeft: '5px'}}>Delete</Button>
                       <Button type="submit" size="large" onClick={() => setDataDetail({})} variant="contained" startIcon={<CancelIcon />}
-                        disabled={yesterday_summary === "" && today_summary === "" && blocking_summary === "" && related_tasks === "" && other === ""} style={{marginLeft: '5px'}} >Cancel</Button>
-                        
+                        disabled={yesterdaySummary === "" && todaySummary === "" && blockingSummary === "" && relatedTasks === "" && other === ""} style={{marginLeft: '5px'}} >Cancel</Button>
+                      {roleId === ROLE_ID_ADMIN &&
+                        <Button type="submit" size="large" onClick={(e) => onApprove(e)} variant="contained" startIcon={<DoneIcon />}
+                          disabled={!detail.id || detail.status !== SU_DUNG} style={{marginLeft: '5px'}}>Approve</Button>
+                      }
                       </div>
                   </form>
               </Paper>
