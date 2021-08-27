@@ -17,24 +17,34 @@ class UserController extends Controller
         return [];
     }
     
-    public function getAll(Request $request)
+    public function getPartial(Request $request)
     {
         $query = $request->query() ?? [];
-        $data = $this->userService->getAll($query);
+        $data = $this->userService->getPartial($query);
         return $data;
     }
     
     public function create(Request $request)
     {
         $input = $request->all();
-        
+        $email = $input['email'];
+        $checkEmail = $this->userService->checkEmailbyEmail($email);
+        if(!empty($checkEmail)) {
+            return ['error' => 'Email đã tồn tại'];
+        }
         $data = $this->userService->create($input);
-        return $data;
+        return ['success'];
     }
     
     public function update($id, Request $request)
     {
         $input = $request->all();
+        $input = $request->all();
+        $email = $input['email'];
+        $checkEmail = $this->userService->checkEmailbyEmail($email, $id);
+        if(!empty($checkEmail)) {
+            return ['error' => 'Email đã tồn tại'];
+        }
         
         $data = $this->userService->update($id, $input);
         return $data;

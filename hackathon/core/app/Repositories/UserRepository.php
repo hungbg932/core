@@ -26,6 +26,14 @@ class UserRepository extends BaseRepository
         ];
         
         $data = $this->model->query();
+        
+        if(!empty($keywords)) {
+            $data->where(function($subQuery) use($keywords) {
+                $subQuery->where('name', 'like', "%$keywords%");
+                $subQuery->orWhere('email', 'like', "%$keywords%");
+            });
+        }
+        
         $data->orderBy('id', 'asc');
         return Util::getPartial($data, $limit, $page, $column);
     }
@@ -51,5 +59,19 @@ class UserRepository extends BaseRepository
     public function getByEmail($email)
     {
         return $this->model->where('email', $email)->first();
+    }
+    
+    public function checkEmailbyEmail($email, $userId=0)
+    {
+        $where = [
+            ['email', $email]
+        ];
+
+        if($userId > 0) {
+            $where[] = ['id', '<>', $userId];
+        }
+
+        $data = $this->model->where($where)->first();
+        return $data;
     }
 }
