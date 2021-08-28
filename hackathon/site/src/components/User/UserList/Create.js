@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
-import { Paper, TextField, Button, Typography } from "@material-ui/core";
+import { Paper, TextField, Button, Typography, Select, MenuItem, InputLabel, FormControl } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "@reach/router";
 import useAxios from "axios-hooks";
-import { useForm } from "react-hook-form";
+import { useForm, Controller  } from "react-hook-form";
 import userApi from '../../../api/userApi';
 import { useSnackbar } from 'notistack';
 
@@ -63,13 +63,17 @@ const useStyles = makeStyles(theme => ({
     '&$inputFocused': {
         color: theme.palette.secondary.main
     },
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 export default function (props) {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, control } = useForm();
   const inputProps = {
     classes: {
       root: classes.inputRoot,
@@ -97,6 +101,7 @@ export default function (props) {
       });
     }
   };
+  console.log(props.teams)
   
   return (
     <form className={classes.boxWrapper} onSubmit={handleSubmit(onSubmit)}>
@@ -111,6 +116,7 @@ export default function (props) {
         fullWidth margin="normal" 
         {...register("name", { required: true })}
       />
+      
       <TextField 
         InputLabelProps={inputLabelProps} 
         InputProps={inputProps} 
@@ -121,6 +127,20 @@ export default function (props) {
         fullWidth margin="normal" 
         {...register("email", { required: true })}
       />
+      
+      <TextField 
+        InputLabelProps={{
+          shrink: true,
+        }}
+        name="dob" 
+        label="Ngày sinh" 
+        type="date" 
+        variant="outlined" 
+        fullWidth
+        margin="normal" 
+        {...register("dob", { required: true })}
+      />
+      
       <TextField
         InputLabelProps={inputLabelProps}
         InputProps={inputProps}
@@ -132,6 +152,70 @@ export default function (props) {
         margin="normal"
         {...register("password", { required: true })}
       />
+      
+      <TextField
+        InputLabelProps={inputLabelProps}
+        InputProps={inputProps}
+        name="image_url"
+        label="Image Url"
+        type="text"
+        variant="outlined"
+        fullWidth 
+        margin="normal"
+        {...register("image_url")}
+      />
+      
+      <TextField
+        InputLabelProps={inputLabelProps}
+        InputProps={inputProps}
+        name="job_title"
+        label="Job Title"
+        type="text"
+        variant="outlined"
+        fullWidth 
+        margin="normal"
+        {...register("job_title")}
+      />
+      
+      <Controller
+        name="team_id"
+        control={control}
+        defaultValue={""}
+        render={({ field }) => {
+          return (
+          <FormControl variant="outlined" fullWidth margin="normal" className={classes.formControl}>
+            <InputLabel>Chọn team</InputLabel>
+            <Select
+              name="team_id"
+              {...field}
+            >
+              {props.teams.map(item => {return <MenuItem value={item.id}>{item.name}</MenuItem>})}
+            </Select>
+          </FormControl>)
+          }
+        }
+      />
+      
+      <Controller
+        name="role_id"
+        control={control}
+        defaultValue={""}
+        render={({ field }) => {
+          return (
+          <FormControl variant="outlined" fullWidth margin="normal" className={classes.formControl}>
+            <InputLabel>Role Id</InputLabel>
+            <Select
+              name="role_id"
+              {...field}
+            >
+              <MenuItem value={1}>Administrator</MenuItem>
+              <MenuItem value={2}>Developer</MenuItem>
+            </Select>
+          </FormControl>)
+          }
+        }
+      />
+        
       <Button 
         classes={{ root: classes.loginButtonRoot, label: classes.loginButtonText }}
         type="submit"

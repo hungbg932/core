@@ -130,7 +130,7 @@ function TeamList() {
   useEffect(() => {
     async function fetchTeamList() {
       try {
-        const response = await teamApi.getAll(filters);
+        const response = await teamApi.getPartial(filters);
         const { data, pagination } = response;
         setTeamList(data);
         setPagination(pagination);

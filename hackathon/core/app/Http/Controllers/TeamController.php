@@ -20,6 +20,13 @@ class TeamController extends Controller
         return [];
     }
     
+    public function getPartial(Request $request)
+    {
+       $query = $request->query() ?? [];
+        $data = $this->teamService->getPartial($query);
+        return $data;
+    }
+    
     public function getAll(Request $request)
     {
        $query = $request->query() ?? [];
@@ -34,7 +41,7 @@ class TeamController extends Controller
         if($user['role_id'] == 1){
             $data = $this->teamService->create($input);
         }else{
-            $data = 'chi addmin duoc tao'; 
+            return ['error' => 'chi administrator duoc them'];
         }
         return $data;
     }
@@ -46,7 +53,7 @@ class TeamController extends Controller
        if($user['role_id'] == 1){
              $data = $this->teamService->update($id, $input);
         }else{
-            $data = 'chi addmin duoc sua'; 
+            return ['error' => 'chi administrator duoc sua'];
         }
         return $data;
     }
