@@ -18,6 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('echo', function() {
+    return "OK";
+});
+
 Route::get('demo', function() {
     return "Hello world";
 });
@@ -31,14 +35,14 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
 });
 
-Route::group(['middleware' => 'api', 'prefix' => 'users'], function ($router) {
+Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'users'], function ($router) {
     Route::get('', 'UserController@getPartial');
     Route::post('create', 'UserController@create');
     Route::post('update/{id}', 'UserController@update');
     Route::get('getById/{id}', 'UserController@getById');
 });
 
-Route::group(['middleware' => 'api', 'prefix' => 'report'], function ($router) {
+Route::group(['middleware' => ['api'], 'prefix' => 'report'], function ($router) {
     Route::post('getPartial', 'ReportController@getPartial');
     Route::post('create', 'ReportController@create');
     Route::post('update/{id}', 'ReportController@update');
