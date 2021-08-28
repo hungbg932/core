@@ -1,3 +1,9 @@
+test:
+	vendor/bin/phpunit --testdox
+
+test_case:
+	vendor/bin/phpunit --testdox --filter=$(filter)
+
 serve:
 	php artisan serve --host 0.0.0.0 --port=$(port)
 

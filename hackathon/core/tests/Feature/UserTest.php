@@ -10,6 +10,8 @@ use App\User;
 
 class UserTest extends TestCase
 {
+    // use RefreshDatabase; // use only migration script is correct!!
+    
     /**
      * Expect user can login if supplied jwt token.
      *
@@ -17,7 +19,12 @@ class UserTest extends TestCase
      */
     public function testAuthSuccess()
     {
-        $user = factory(User::class)->create();
+
+        $user = factory(User::class)->create([
+            'name' => 'Bui Gia Hung',
+            'email' => 'hung.bui.@gmail.com',
+            'job_title' => 'DEV'
+        ]);
 
         $response = $this->actingAs($user)
             ->get('/api/users');
@@ -32,8 +39,6 @@ class UserTest extends TestCase
      */
     public function testAuthFail()
     {
-        $user = factory(User::class)->create();
-
         $response = $this->get('/api/users');
         
         $response->assertStatus(401);

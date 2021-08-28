@@ -16,7 +16,7 @@ class HealthCheckTest extends TestCase
     public function testHealthCheck()
     {
         $response = $this->get('/api/echo');
-        $response->assertOk()
+        $response->assertStatus(200)
             ->assertSeeText('OK');
     }
 }

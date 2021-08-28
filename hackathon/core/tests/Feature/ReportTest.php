@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
 use App\Models\Report;
+use App\Models\User as ModelUser;
 use Faker\Generator as Faker;
 use App\Repositories\ReportRepository;
 
@@ -37,6 +38,7 @@ class ReportTest extends TestCase
             ->post(self::CREATE_ENDPOINT, $request);
         
         $response->assertStatus(400);
+        // 200
     }
     
     /**
@@ -117,19 +119,30 @@ class ReportTest extends TestCase
      */
     public function testVerifyReportHappyCase()
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'role_id' => ModelUser::MANAGER_ROLE
+        ]);
         
-        $report = factory(User::class)->create();
+        $report = factory(Report::class)->create();
         
         
         $request = [
             'verified_by' => $user->id
         ];
+        // logic là manager mới dc verify
 
         $response = $this->actingAs($user)
             ->post(self::UPDATE_ENDPOINT.self::SLASH.$report->id, $request);
+        // cach 1 - if return report object
+        // compare in report object
         
         $response->assertStatus(200);
+        
+        // cach 2 - select report by ID
+        // compare attribute
+        
+        // viet them assert check report has expect attributes
+        
     }
     
     /**
@@ -141,7 +154,7 @@ class ReportTest extends TestCase
     {
         $user = factory(User::class)->create();
         
-        $report = factory(User::class)->create();
+        $report = factory(Report::class)->create();
         
         
         $request = [

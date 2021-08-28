@@ -22,9 +22,22 @@ class DBConnectionTest extends TestCase
             DB::connection()->getPdo();
             $dbName = DB::connection()->getDatabaseName();
             $this->assertEquals($dbName, $envDatabaseName);
+            $this->assertEquals($dbName, 'hackathon_test');
+            // @TODO - assert host, port, user...
+            
         } catch (\Exception $ex) {
-            die("Could not connect to the database.  Please check your configuration. error:" . $e );
+            die("Could not connect to the database.  Please check your configuration. error:" . $ex );
         }
         
+    }
+    
+    /**
+     * Test DB Tables.
+     *
+     * @return void
+     */
+    public function testTables(){
+        // make sure DB has some important table
+        // make sure some important table has column
     }
 }

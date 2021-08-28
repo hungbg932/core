@@ -42,7 +42,7 @@ Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'users'], functio
     Route::get('getById/{id}', 'UserController@getById');
 });
 
-Route::group(['middleware' => ['api'], 'prefix' => 'report'], function ($router) {
+Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'report'], function ($router) {
     Route::post('getPartial', 'ReportController@getPartial');
     Route::post('create', 'ReportController@create');
     Route::post('update/{id}', 'ReportController@update');
@@ -51,7 +51,7 @@ Route::group(['middleware' => ['api'], 'prefix' => 'report'], function ($router)
     Route::post('getByFilter', 'ReportController@getByFilter');
 });
 
-Route::group(['middleware' => 'api', 'prefix' => 'team'], function ($router) {
+Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'team'], function ($router) {
     Route::get('', 'TeamController@getPartial');
     Route::get('getAll', 'TeamController@getAll');
     Route::post('create', 'TeamController@create');
