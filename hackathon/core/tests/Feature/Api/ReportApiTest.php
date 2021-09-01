@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,8 +12,10 @@ use Faker\Generator as Faker;
 use App\Repositories\ReportRepository;
 
 
-class ReportTest extends TestCase
+class ReportApiTest extends TestCase
 {
+    use RefreshDatabase; // use only migration script is correct!!
+    
     use WithFaker;
     
     const END_POINT = '/api/report';
@@ -113,35 +115,46 @@ class ReportTest extends TestCase
     }
     
     /**
-     * test verifyReportHappyCase
+     * test could verify report
      *
      * @return void
      */
     public function testVerifyReportHappyCase()
     {
-        $user = factory(User::class)->create([
+        $manager = factory(User::class)->create([
             'role_id' => ModelUser::MANAGER_ROLE
         ]);
         
-        $report = factory(Report::class)->create();
+        $normalUser = factory(User::class)->create([
+            'role_id' => ModelUser::USER_ROLE
+        ]);
+        
+        $report = factory(Report::class)->create([
+            'created_by' => $normalUser->id
+        ]);
         
         
         $request = [
-            'verified_by' => $user->id
+            'verified_by' => $manager->id
         ];
         // logic là manager mới dc verify
 
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($manager)
             ->post(self::UPDATE_ENDPOINT.self::SLASH.$report->id, $request);
-        // cach 1 - if return report object
-        // compare in report object
         
         $response->assertStatus(200);
         
-        // cach 2 - select report by ID
-        // compare attribute
+        // compare json payload
+        $response->assertJson([
+            'verified_by' => $manager->id
+        ]);
         
-        // viet them assert check report has expect attributes
+        // compare Database
+        $report = Report::find($report->id);
+        
+        $this->assertEquals($manager->id, $report->verified_by);
+        $this->assertNotNull($report->created_by, '----created_by not null----');
+
         
     }
     

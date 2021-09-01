@@ -14,7 +14,7 @@ class CreateUserTable extends Migration {
 	{
 		Schema::create('user', function(Blueprint $table)
 		{
-			$table->integer('id')->primary('user_pkey');
+			$table->integer('id', true);
 			$table->string('name', 200)->nullable();
 			$table->string('job_title', 200)->nullable();
 			$table->dateTime('dob')->nullable();

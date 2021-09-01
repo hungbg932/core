@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -8,9 +8,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\User;
 
 
-class UserTest extends TestCase
+class UserApiTest extends TestCase
 {
-    // use RefreshDatabase; // use only migration script is correct!!
+    use RefreshDatabase; // use only migration script is correct!!
     
     /**
      * Expect user can login if supplied jwt token.

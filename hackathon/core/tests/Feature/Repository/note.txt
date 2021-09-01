@@ -1,0 +1,6 @@
+// SEEDING 100 report, 10 verified by user id 666
+        
+        $input = ['verified_by', '666'];
+        $result = $reportRepo->getPartial($input);
+        
+        $this->assertEquals(count($result), 10);
