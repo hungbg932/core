@@ -12,7 +12,7 @@ use Faker\Generator as Faker;
 use App\Repositories\ReportRepository;
 
 
-class ReportTest extends TestCase
+class ReportApiTest extends TestCase
 {
     use RefreshDatabase; // use only migration script is correct!!
     
