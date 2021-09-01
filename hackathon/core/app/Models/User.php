@@ -16,5 +16,10 @@ class User extends Model
     
     public $timestamps = false;
     
-    protected $guarded = ['id'];
+    /**
+     * @var integer
+     */
+    public $id;
+
+    protected $guarded = [];
 }

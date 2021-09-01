@@ -10,7 +10,7 @@ use App\User;
 
 class UserTest extends TestCase
 {
-    // use RefreshDatabase; // use only migration script is correct!!
+    use RefreshDatabase; // use only migration script is correct!!
     
     /**
      * Expect user can login if supplied jwt token.
