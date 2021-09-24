@@ -57,5 +57,10 @@ Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'team'], function
     Route::post('create', 'TeamController@create');
     Route::post('update/{id}/{idUser}', 'TeamController@update');
     Route::post('delete/{id}', 'TeamController@delete');
-     Route::get('getById/{id}', 'TeamController@getById');
+    Route::get('getById/{id}', 'TeamController@getById');
+});
+
+Route::group(['middleware' => ['api', 'jwt.auth'], 'prefix' => 'payment'], function ($router) {
+    Route::get('getPaypalConfig', 'PaymentController@getPaypalConfig');
+    Route::post('processPayment', 'PaymentController@processPayment');
 });

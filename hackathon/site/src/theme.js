@@ -1,5 +1,5 @@
 import { red, amber, grey } from "@material-ui/core/colors";
-import { createMuiTheme, responsiveFontSizes } from "@material-ui/core/styles";
+import { createTheme, responsiveFontSizes } from "@material-ui/core/styles";
 import Fonts from "./assets/fonts";
 
 const fontFamilyRoboto = {
@@ -26,7 +26,7 @@ const fontFamilyMetropolis = {
 };
 
 // A custom theme for this app
-const lightMuiTheme = createMuiTheme({
+const lightMuiTheme = createTheme({
   type: "light",
   palette: {
     primary: {
@@ -114,7 +114,7 @@ const lightMuiTheme = createMuiTheme({
   }
 });
 
-const darkMuiTheme = createMuiTheme({
+const darkMuiTheme = createTheme({
   type: "dark",
   palette: {
     primary: {
