@@ -15,6 +15,7 @@ import UserList from "./User/UserList";
 import DanhSachBaoCao from "./DanhSachBaoCao";
 import Report from "./Report";
 import Team from "./Team";
+import Paypal from "./Paypal";
 
 export default function ({ navigate }) {
     const [{ data: result = {}, loading }, userInfo] = useAxios({
@@ -123,6 +124,9 @@ function ThemeControlledComponent() {
                   </Router>
                    <Router>
                     <Team path="team" />
+                  </Router>
+                  <Router>
+                    <Paypal path="paypal" />
                   </Router>
                 </div>
               </div>

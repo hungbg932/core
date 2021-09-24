@@ -102,6 +102,13 @@ export default function NavDrawer(props) {
           isSelected={selectedLabelId === 'team'}
           onClick={() => onDrawerItemSelected('team')}
         />
+        <DrawerItem
+          key={'paypal'}
+          text={'Test Paypal API'}
+          icon={<LabelIcon htmlColor={theme.custom.palette.iconColor} />}
+          isSelected={selectedLabelId === 'paypal'}
+          onClick={() => onDrawerItemSelected('paypal')}
+        />
         {/*<DrawerItem
           key={'drawer-2'}
           text={'drawer-2'}

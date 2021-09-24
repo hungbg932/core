@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +14,10 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\User::class, function (Faker $faker) {
+$factory->define(App\Models\Team::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => \Hash::make('123456'), 
-        // 'remember_token' => str_random(10),
+        'description' => $faker->text(125),
+        'created_at' => Carbon::now(),
     ];
 });

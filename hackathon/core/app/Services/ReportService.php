@@ -38,6 +38,8 @@ class ReportService {
     public function update($id, array $input)
     {
         $input['verified_at'] = new DateTime();
+        // get user who verify this report: 111111111
+        // check report id existed: 11111111
         return $this->reportRepository->update($id, $input);
     }
 
